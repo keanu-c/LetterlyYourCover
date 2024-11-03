@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import CoverLetterTemplate
+
 # Register your models here.
 @admin.register(CoverLetterTemplate)
 class TemplateAdmin(admin.ModelAdmin):
