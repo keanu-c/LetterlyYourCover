@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Provider } from "@/components/ui/provider"
 import { toaster } from "@/components/ui/toaster"
-import {   
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText, } from "@/components/ui/select"
 import { NativeSelectField, NativeSelectRoot } from "@/components/ui/native-select"
 import { ProgressBar, ProgressRoot } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
@@ -16,11 +9,9 @@ import {
   VStack,
   HStack,
   Heading,
-  //Select,
   Textarea,
   Container,
   Text,
-  //Progress,
   Card, // Use card.root, card.body, card.footer
 } from '@chakra-ui/react';
 
@@ -111,7 +102,7 @@ function App() {
         <VStack align="stretch">
 
           <Heading textAlign="center" size="4xl" mb={4}>
-            Cover Letter 
+            LetterlyYourCover
           </Heading>
 
           <Card.Root height="150px">
@@ -197,7 +188,7 @@ function App() {
                 <Textarea
                   value={coverLetter}
                   height="400px"
-                  isReadOnly
+                  variant="subtle"
                   fontSize="md"
                 />
                 <Button
