@@ -8,6 +8,7 @@ import {
   SelectRoot,
   SelectTrigger,
   SelectValueText, } from "@/components/ui/select"
+import { NativeSelectField, NativeSelectRoot } from "@/components/ui/native-select"
 import { ProgressBar, ProgressRoot } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import {
@@ -47,6 +48,11 @@ function App() {
     };
     fetchTemplates();
   }, [toaster]);
+
+  console.log("Templates: ", templates)
+  console.log("Selected Template: ", selectedTemplate)
+  console.log("Resume: ", resumeText)
+  console.log("Job: ", jobPosting)
 
   const handleGenerate = async () => {
     if (!resumeText || !jobPosting || !selectedTemplate) {
@@ -101,38 +107,41 @@ function App() {
   return (
     <Provider>
       <Container maxW="container.lg" py={8}>
-        <VStack spacing={6} align="stretch">
-          <Heading textAlign="center" size="xl" mb={4}>
+
+        <VStack align="stretch">
+
+          <Heading textAlign="center" size="4xl" mb={4}>
             Cover Letter 
           </Heading>
 
-          <Card.Root>
+          <Card.Root height="150px">
             <Card.Header>
-              <Heading size="md">1. Select Template</Heading>
+              <Heading size="md" textAlign="center">1. Select Template</Heading>
             </Card.Header>
-            <Card.Body> 
+            <Card.Body>
 
-              <SelectRoot size="xl">
-                <SelectLabel size="mlg">Templates</SelectLabel>
-                <SelectTrigger>
-                  <SelectValueText placeholder="Choose a cover letter template"/>
-                </SelectTrigger>
-                <SelectContent>
+              <NativeSelectRoot size="md" width="100%">
+                <NativeSelectField
+                  placeholder="Select a template"
+                  value={selectedTemplate}
+                  onChange={(e) => setSelectedTemplate(e.target.value)}
+                >
                   {templates.map((template) => (
-                  <SelectItem key={template.id} value={template.id}>
-                    {template.name}
-                  </SelectItem>
-                ))}
-                </SelectContent>
-              </SelectRoot>
+                    <option key={template.id} value={template.id}>
+                      {template.name}
+                    </option>
+                  ))}
+                </NativeSelectField>
+              </NativeSelectRoot>
 
             </Card.Body>
           </Card.Root>
 
-          <HStack spacing={4} align="stretch">
+          <HStack align="stretch">
+
             <Card.Root flex={1}>
               <Card.Header>
-                <Heading size="md">2. Your Resume</Heading>
+                <Heading size="md" textAlign="center">2. Your Resume</Heading>
               </Card.Header>
               <Card.Body>
                 <Textarea
@@ -146,7 +155,7 @@ function App() {
 
             <Card.Root flex={1}>
               <Card.Header>
-                <Heading size="md">3. Job Posting</Heading>
+                <Heading size="md" textAlign="center">3. Job Posting</Heading>
               </Card.Header>
               <Card.Body>
                 <Textarea
@@ -157,10 +166,11 @@ function App() {
                 />
               </Card.Body>
             </Card.Root>
+
           </HStack>
 
           <Button
-            colorScheme="blue"
+            colorPalette="white"
             size="lg"
             onClick={handleGenerate}
             loading={isLoading}
@@ -172,7 +182,7 @@ function App() {
           {isLoading && (
             <Box>
               <Text mb={2}>Analyzing and generating your cover letter...</Text>
-              <ProgressRoot size="xs" value={isIndeterminate}>
+              <ProgressRoot size="sm" loading>
                 <ProgressBar/>
               </ProgressRoot>
             </Box>

@@ -199,4 +199,47 @@ function App() {
 }
 
 export default App;
+
+
+
+<Select
+  placeholder="Choose a cover letter template"
+  value={selectedTemplate}
+  onChange={(e) => setSelectedTemplate(e.target.value)}
+>
+  {templates.map((template) => (
+    <option key={template.id} value={template.id}>
+      {template.name}
+    </option>
+  ))}
+</Select>
+
+
+              <SelectRoot size="xl">
+                <SelectLabel size="mlg">Available Templates</SelectLabel>
+                <SelectTrigger>
+                  <SelectValueText placeholder="Choose a cover letter template"/>
+                </SelectTrigger>
+                <SelectContent>
+                  {templates.map((template) => (
+                  <SelectItem key={template.id} value={template.id}>
+                    {template.name}
+                  </SelectItem>
+                ))}
+                </SelectContent>
+              </SelectRoot>
+
+            <NativeSelectRoot size="md" width="100%">
+              <NativeSelectField
+                placeholder="Choose a cover letter template"
+                value={selectedTemplate}
+                onChange={(e) => setSelectedTemplate(e.target.value)}
+              >
+                {templates.map((template) => (
+                  <option key={template.id} value={template.id}>
+                    {template.name}
+                  </option>
+                ))}
+              </NativeSelectField>
+            </NativeSelectRoot>
 */
