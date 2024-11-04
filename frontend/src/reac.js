@@ -1,26 +1,22 @@
-import React, { useState, useEffect } from 'react'
-import { Provider } from "@/components/ui/provider"
-import { toaster } from "@/components/ui/toaster"
-import {   
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText, } from "@/components/ui/select"
-import { ProgressBar, ProgressRoot } from "@/components/ui/progress"
-import { Button } from "@/components/ui/button"
+/*
+import React, { useState, useEffect } from 'react';
 import {
+  ChakraProvider,
   Box,
   VStack,
-  HStack,
   Heading,
-  //Select,
+  Select,
   Textarea,
+  Button,
   Container,
+  useToast,
   Text,
-  //Progress,
-  Card, // Use card.root, card.body, card.footer
+  Divider,
+  HStack,
+  Progress,
+  Card,
+  CardBody,
+  CardHeader,
 } from '@chakra-ui/react';
 
 function App() {
@@ -30,27 +26,29 @@ function App() {
   const [jobPosting, setJobPosting] = useState('');
   const [coverLetter, setCoverLetter] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
-    const fetchTemplates = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/templates/');
-        const data = await response.json();
-        setTemplates(data);
-      } catch (error) {
-        toaster.create({
-          title: 'Error fetching templates',
-          status: 'error',
-          duration: 3000,
-        });
-      }
-    };
     fetchTemplates();
-  }, [toaster]);
+  }, []);
+
+  const fetchTemplates = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/templates/');
+      const data = await response.json();
+      setTemplates(data);
+    } catch (error) {
+      toast({
+        title: 'Error fetching templates',
+        status: 'error',
+        duration: 3000,
+      });
+    }
+  };
 
   const handleGenerate = async () => {
     if (!resumeText || !jobPosting || !selectedTemplate) {
-      toaster.create({
+      toast({
         title: 'Missing Information',
         description: 'Please provide your resume, job posting, and select a template.',
         status: 'warning',
@@ -80,14 +78,14 @@ function App() {
       const data = await response.json();
       setCoverLetter(data.cover_letter);
       
-      toaster.create({
+      toast({
         title: 'Success!',
         description: 'Your cover letter has been generated.',
         status: 'success',
         duration: 3000,
       });
     } catch (error) {
-      toaster.create({
+      toast({
         title: 'Error',
         description: 'Failed to generate cover letter. Please try again.',
         status: 'error',
@@ -99,71 +97,67 @@ function App() {
   };
 
   return (
-    <Provider>
+    <ChakraProvider>
       <Container maxW="container.lg" py={8}>
         <VStack spacing={6} align="stretch">
           <Heading textAlign="center" size="xl" mb={4}>
-            Cover Letter 
+            Cover Letter Generator
           </Heading>
 
-          <Card.Root>
-            <Card.Header>
+          <Card>
+            <CardHeader>
               <Heading size="md">1. Select Template</Heading>
-            </Card.Header>
-            <Card.Body> 
-
-              <SelectRoot size="xl">
-                <SelectLabel size="mlg">Templates</SelectLabel>
-                <SelectTrigger>
-                  <SelectValueText placeholder="Choose a cover letter template"/>
-                </SelectTrigger>
-                <SelectContent>
-                  {templates.map((template) => (
-                  <SelectItem key={template.id} value={template.id}>
+            </CardHeader>
+            <CardBody>
+              <Select
+                placeholder="Choose a cover letter template"
+                value={selectedTemplate}
+                onChange={(e) => setSelectedTemplate(e.target.value)}
+              >
+                {templates.map((template) => (
+                  <option key={template.id} value={template.id}>
                     {template.name}
-                  </SelectItem>
+                  </option>
                 ))}
-                </SelectContent>
-              </SelectRoot>
-
-            </Card.Body>
-          </Card.Root>
+              </Select>
+            </CardBody>
+          </Card>
 
           <HStack spacing={4} align="stretch">
-            <Card.Root flex={1}>
-              <Card.Header>
+            <Card flex={1}>
+              <CardHeader>
                 <Heading size="md">2. Your Resume</Heading>
-              </Card.Header>
-              <Card.Body>
+              </CardHeader>
+              <CardBody>
                 <Textarea
                   placeholder="Paste your resume here..."
                   value={resumeText}
                   onChange={(e) => setResumeText(e.target.value)}
                   height="300px"
                 />
-              </Card.Body>
-            </Card.Root>
+              </CardBody>
+            </Card>
 
-            <Card.Root flex={1}>
-              <Card.Header>
+            <Card flex={1}>
+              <CardHeader>
                 <Heading size="md">3. Job Posting</Heading>
-              </Card.Header>
-              <Card.Body>
+              </CardHeader>
+              <CardBody>
                 <Textarea
                   placeholder="Paste the job posting here..."
                   value={jobPosting}
                   onChange={(e) => setJobPosting(e.target.value)}
                   height="300px"
                 />
-              </Card.Body>
-            </Card.Root>
+              </CardBody>
+            </Card>
           </HStack>
 
           <Button
             colorScheme="blue"
             size="lg"
             onClick={handleGenerate}
-            loading={isLoading}
+            isLoading={isLoading}
             loadingText="Generating..."
           >
             Generate Cover Letter
@@ -172,18 +166,16 @@ function App() {
           {isLoading && (
             <Box>
               <Text mb={2}>Analyzing and generating your cover letter...</Text>
-              <ProgressRoot size="xs" value={isIndeterminate}>
-                <ProgressBar/>
-              </ProgressRoot>
+              <Progress size="xs" isIndeterminate />
             </Box>
           )}
 
           {coverLetter && (
-            <Card.Root>
-              <Card.Header>
-                <Heading size="md">Your Generated Cover Letter!</Heading>
-              </Card.Header>
-              <Card.Body>
+            <Card>
+              <CardHeader>
+                <Heading size="md">Your Generated Cover Letter</Heading>
+              </CardHeader>
+              <CardBody>
                 <Textarea
                   value={coverLetter}
                   height="400px"
@@ -197,13 +189,14 @@ function App() {
                 >
                   Copy to Clipboard
                 </Button>
-              </Card.Body>
-            </Card.Root>
+              </CardBody>
+            </Card>
           )}
         </VStack>
       </Container>
-    </Provider>
+    </ChakraProvider>
   );
 }
 
-export default App
+export default App;
+*/
