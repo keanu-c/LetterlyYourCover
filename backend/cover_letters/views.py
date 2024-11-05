@@ -43,19 +43,38 @@ def generate_cover_letter(request):
         # Call OpenAI API
         response = openai.chat.completions.create(
             model = "gpt-3.5-turbo",
+            temperature = 0.9,
             messages = [
                 {
                     "role": "system",
                     "content": """You are a professional cover letter writer. 
-                    Analyze the job posting and resume to create a compelling 
+                    Analyze the job posting and resume to create a compelling and personalized 
                     cover letter that matches the candidate's experience with 
-                    the job requirements."""
+                    the job requirements. 
+
+                    Think about the culture of the organization you’re applying to.
+                    The cover letter should focus on the future and what you want to do.
+                    Start with the punch line — why this job is exciting to the applicant and 
+                    what they bring to the table. You can make something up.
+
+                    Make the cover letter 3-4 paragraphs and a little less than one page.
+
+                    Do:
+                    Have a strong opening statement that makes clear why you want the job and what you bring to the table.
+                    Be succinct — a hiring manager should be able to read your letter at a glance.
+                    Share an accomplishment that shows you can address the challenges the employer is facing.
+                    Don’t:
+                    Try to be funny — too often it falls flat.
+                    Send a generic cover letter — customize each one for the specific job.
+                    Go overboard with flattery — be professional and mature.
+                    """
                 },
                 {
                     "role": "user",
                     "content": f"""
 
-                    Template: {template.content}
+                    Template:
+                    {template.content}
                     
                     Job Posting:
                     {job_posting}
