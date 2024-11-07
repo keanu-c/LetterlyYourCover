@@ -3,7 +3,7 @@
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import CoverLetterTemplate
+from .models import CoverLetterTemplate, GenerationCount
 from .serializers import CoverLetterTemplateSerializer
 import openai
 import os
@@ -92,6 +92,11 @@ def generate_cover_letter(request):
         # Get the generated content
         generated_content = response.choices[0].message.content
         
+        # Increment or initialize the generation count
+        count_record, _ = GenerationCount.objects.get_or_create(defaults={"count": 0})
+        count_record.count += 1
+        count_record.save()
+
         # Return generated cover letter
         return Response ({
             'cover_letter': generated_content
