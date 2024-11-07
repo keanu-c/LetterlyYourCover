@@ -2,9 +2,10 @@
 # from django.conf import settings
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import CoverLetterTemplate, GenerationCount
-from .serializers import CoverLetterTemplateSerializer
+from .serializers import CoverLetterTemplateSerializer, GenerationCountSerializer
 import openai
 import os
 from dotenv import load_dotenv
@@ -19,6 +20,12 @@ class CoverLetterTemplateViewSet(viewsets.ModelViewSet):
     # ViewSet for viewing and editing templates
     queryset = CoverLetterTemplate.objects.all()
     serializer_class = CoverLetterTemplateSerializer
+
+class GenerationCountView(APIView):
+    def get(self, request):
+        count_record, _ = GenerationCount.objects.get_or_create(id=1)
+        serializer = GenerationCountSerializer(count_record)
+        return Response(serializer.data)
 
 @api_view(['POST'])
 def generate_cover_letter(request):

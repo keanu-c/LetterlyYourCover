@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from .views import GenerationCountView
 
 # Create a router and register our viewsets with it
 router = DefaultRouter()
@@ -10,4 +11,5 @@ router.register(r'templates', views.CoverLetterTemplateViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('generate/', views.generate_cover_letter, name = 'generate_cover_letter'),
+    path('generation-count/', GenerationCountView.as_view(), name='generation-count'),
 ]
