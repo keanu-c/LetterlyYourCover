@@ -1,5 +1,3 @@
-from django.db import models
-
 # Create your models here.
 from django.db import models
 
@@ -19,3 +17,10 @@ class CoverLetterTemplate(models.Model):
     def __str__(self):
         # String representation of the template
         return self.name
+
+# Keep track of generation count
+class GenerationCount(models.Model):
+    count = models.PositiveIntegerField(default = 0)
+
+    def __str__(self) -> str:
+        return self.count
