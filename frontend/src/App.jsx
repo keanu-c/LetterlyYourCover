@@ -22,28 +22,37 @@ function App() {
   const [jobPosting, setJobPosting] = useState('');
   const [coverLetter, setCoverLetter] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [generationCount, setGenerationCount] = useState(0);
 
   useEffect(() => {
-    const fetchTemplates = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/templates/');
-        const data = await response.json();
-        setTemplates(data);
-      } catch (error) {
+    fetchTemplates();
+    fetchGenerationCount();
+  }, []);
+
+  const fetchTemplates = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/templates/');
+      const data = await response.json();
+      setTemplates(data);
+    } catch (error) {
         toaster.create({
           title: 'Error fetching templates',
           status: 'error',
           duration: 3000,
         });
-      }
-    };
-    fetchTemplates();
-  }, [toaster]);
+    }
+  };
 
-  console.log("Templates: ", templates)
-  console.log("Selected Template: ", selectedTemplate)
-  console.log("Resume: ", resumeText)
-  console.log("Job: ", jobPosting)
+  const fetchGenerationCount = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/generation-count/');
+      const data = await response.json();
+      console.log(data.count);
+      setGenerationCount(data.count);
+    } catch (error) {
+      console.error("Error fetching generation count:", error);
+    }
+  };
 
   const handleGenerate = async () => {
     if (!resumeText || !jobPosting || !selectedTemplate) {
@@ -55,8 +64,8 @@ function App() {
       });
       return;
     }
-
     setIsLoading(true);
+
     try {
       const response = await fetch('http://localhost:8000/api/generate/', {
         method: 'POST',
@@ -84,12 +93,12 @@ function App() {
         duration: 3000,
       });
     } catch (error) {
-      toaster.create({
-        title: 'Error',
-        description: 'Failed to generate cover letter. Please try again.',
-        status: 'error',
-        duration: 3000,
-      });
+        toaster.create({
+          title: 'Error',
+          description: 'Failed to generate cover letter. Please try again.',
+          status: 'error',
+          duration: 3000,
+        });
     } finally {
       setIsLoading(false);
     }
@@ -97,17 +106,35 @@ function App() {
 
   return (
     <Provider>
-      <Container maxW="container.lg" py={8}>
+      <Container maxW="container.4xl" py={3} width="100%">
 
-        <VStack align="stretch">
+        <VStack alignItems="stretch" gap="10px">
 
-          <Heading textAlign="center" size="4xl" mb={4}>
-            LetterlyYourCover
-          </Heading>
+          <HStack width="100%" justify="center" align="center">
 
-          <Card.Root height="150px">
+            <Heading size="4xl" margin={3}>
+              LetterlyYourCover
+            </Heading>
+
+            <Text size="xs" position="absolute" right="8" textAlign="right">
+              Total Cover Letters Generated: {generationCount}
+            </Text>
+
+          </HStack>
+
+          <Card.Root height="125px">
             <Card.Header>
-              <Heading size="md" textAlign="center">1. Select Template</Heading>
+              <HStack width="100%" position="relative">
+
+                <Box position="absolute" left="50%" transform="translateX(-50%)">
+                  <Heading size="lg" textAlign="center"><strong>Select Template</strong></Heading>
+                </Box>
+
+                <Heading size="sm" position="absolute" right="0" textAlign="right">
+                  *From credible university websites
+                </Heading>
+
+              </HStack>
             </Card.Header>
             <Card.Body>
 
@@ -129,11 +156,12 @@ function App() {
           </Card.Root>
 
           <HStack align="stretch">
-
             <Card.Root flex={1}>
+
               <Card.Header>
-                <Heading size="md" textAlign="center">2. Your Resume</Heading>
+                <Heading size="lg" textAlign="center"><strong>Your Resume</strong></Heading>
               </Card.Header>
+
               <Card.Body>
                 <Textarea
                   placeholder="Paste your resume here..."
@@ -142,11 +170,12 @@ function App() {
                   height="300px"
                 />
               </Card.Body>
+
             </Card.Root>
 
             <Card.Root flex={1}>
               <Card.Header>
-                <Heading size="md" textAlign="center">3. Job Posting</Heading>
+                <Heading size="lg" textAlign="center"><strong>Job Posting</strong></Heading>
               </Card.Header>
               <Card.Body>
                 <Textarea
@@ -182,7 +211,8 @@ function App() {
           {coverLetter && (
             <Card.Root>
               <Card.Header>
-                <Heading size="md">Your Generated Cover Letter!</Heading>
+                <Heading size="2xl" textAlign="center" textShadow="md">Your Generated Cover Letter!</Heading>
+                <Heading size="sm" textAlign="center"><strong>Remember:</strong> Review your cover letter and personalize it even more.</Heading>
               </Card.Header>
               <Card.Body>
                 <Textarea
@@ -190,6 +220,8 @@ function App() {
                   height="400px"
                   variant="subtle"
                   fontSize="md"
+                  readOnly
+                  colorPalette="black"
                 />
                 <Button
                   mt={4}
