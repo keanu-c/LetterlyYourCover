@@ -28,7 +28,7 @@ function App() {
     fetchTemplates();
     fetchGenerationCount();
   }, []);
-
+  // Get templates from backend
   const fetchTemplates = async () => {
     try {
       const response = await fetch('http://localhost:8000/api/templates/');
@@ -42,7 +42,7 @@ function App() {
         });
     }
   };
-
+  // Generation Count
   const fetchGenerationCount = async () => {
     try {
       const response = await fetch('http://localhost:8000/api/generation-count/');
@@ -53,7 +53,7 @@ function App() {
       console.error("Error fetching generation count:", error);
     }
   };
-
+  // Generate cover letter
   const handleGenerate = async () => {
     if (!resumeText || !jobPosting || !selectedTemplate) {
       toaster.create({
@@ -106,7 +106,7 @@ function App() {
 
   return (
     <Provider>
-      <Container maxW="container.4xl" py={3} width="100%">
+      <Container width="100vw" py={3}>
 
         <VStack alignItems="stretch" gap="10px">
 
@@ -116,7 +116,7 @@ function App() {
               LetterlyYourCover
             </Heading>
 
-            <Text size="xs" position="absolute" right="8" textAlign="right">
+            <Text fontSize="xs" position="absolute" right="8" textAlign="right">
               Total Cover Letters Generated: {generationCount}
             </Text>
 
@@ -130,9 +130,9 @@ function App() {
                   <Heading size="lg" textAlign="center"><strong>Select Template</strong></Heading>
                 </Box>
 
-                <Heading size="sm" position="absolute" right="0" textAlign="right">
+                <Text fontSize="sm" position="absolute" right="0" textAlign="right">
                   *From credible university websites
-                </Heading>
+                </Text>
 
               </HStack>
             </Card.Header>
