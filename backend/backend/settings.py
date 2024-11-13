@@ -81,8 +81,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cover_letter_templates', 
+        'USER': 'postgres',
+        'PASSWORD': os.getenv('RDS_PASSWORD'),
+        'HOST': 'database-cover-letter.c962c6e6me3m.us-west-1.rds.amazonaws.com', 
+        'PORT': '5432',
     }
 }
 
@@ -130,5 +134,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Add CORS settings
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5175",  # This will allow our React frontend to connect
+    "http://localhost:5173",  # This will allow our React frontend to connect
 ]
