@@ -18,6 +18,7 @@ import {
 function App() {
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [selectedTemplateDescription, setSelectedTemplateDescription] = useState('');
   const [resumeText, setResumeText] = useState('');
   const [jobPosting, setJobPosting] = useState('');
   const [coverLetter, setCoverLetter] = useState('');
@@ -166,7 +167,20 @@ function App() {
                 </Box>
 
                 <Text fontSize="sm" position="absolute" right="0" textAlign="right">
-                  *From credible university websites
+                  {selectedTemplateDescription ? (
+                  // If a template is selected, show the URL as a clickable link
+                  <a 
+                    href={selectedTemplateDescription} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{ color: 'white', textDecoration: 'underline' }}
+                  >
+                    {selectedTemplateDescription}
+                  </a>
+                ) : (
+                  // If no template is selected, show the default text
+                  '*From credible university websites'
+                )}
                 </Text>
 
               </HStack>
@@ -177,7 +191,18 @@ function App() {
                 <NativeSelectField
                   placeholder="Select a template"
                   value={selectedTemplate}
-                  onChange={(e) => setSelectedTemplate(e.target.value)}
+                  onChange={(e) => {
+                    
+                    const selectedId = e.target.value;
+                    setSelectedTemplate(selectedId); // Set the selected template id
+            
+                    // Find the selected template and update the description
+                    const selectedTemplateObj = templates.find((template) => template.id === parseInt(selectedId, 10)); // Compare by id
+                    
+                    if (selectedTemplateObj) {
+                      setSelectedTemplateDescription(selectedTemplateObj.description); // Set the description
+                    }
+                  }}
                 >
                   {templates.map((template) => (
                     <option key={template.id} value={template.id}>
