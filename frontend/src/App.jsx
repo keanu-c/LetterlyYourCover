@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Provider } from "@/components/ui/provider"
-import { toaster } from "@/components/ui/toaster"
+import { Toaster, toaster } from "@/components/ui/toaster"
 import { NativeSelectField, NativeSelectRoot } from "@/components/ui/native-select"
 import { ProgressBar, ProgressRoot } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
@@ -23,6 +23,7 @@ function App() {
   const [coverLetter, setCoverLetter] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [generationCount, setGenerationCount] = useState(0);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     fetchTemplates();
@@ -35,10 +36,13 @@ function App() {
       const data = await response.json();
       setTemplates(data);
     } catch (error) {
-        toaster.create({
+        setToast({
+          type: 'error',
           title: 'Error fetching templates',
           status: 'error',
+          description: 'Could not fetch templates',
           duration: 3000,
+          colorPalette: 'red',
         });
     }
   };
@@ -56,11 +60,13 @@ function App() {
   // Generate cover letter
   const handleGenerate = async () => {
     if (!resumeText || !jobPosting || !selectedTemplate) {
-      toaster.create({
+      setToast({
+        type: 'error',
         title: 'Missing Information',
         description: 'Please provide your resume, job posting, and select a template.',
         status: 'warning',
         duration: 3000,
+        colorPalette: 'red',
       });
       return;
     }
@@ -86,33 +92,62 @@ function App() {
       const data = await response.json();
       setCoverLetter(data.cover_letter);
       
-      toaster.create({
+      setToast({
+        type: 'success',
         title: 'Success!',
         description: 'Your cover letter has been generated.',
         status: 'success',
         duration: 3000,
+        colorPalette: 'green',
       });
+
     } catch (error) {
-        toaster.create({
+        setToast({
+          type: 'error',
           title: 'Error',
           description: 'Failed to generate cover letter. Please try again.',
           status: 'error',
           duration: 3000,
+          colorPalette: 'red',
         });
+
     } finally {
       setIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    if (toast) {
+      // Reset toast after it's displayed
+      const timer = setTimeout(() => {
+        setToast(null);
+      }, toast.duration);
+      return () => clearTimeout(timer); // Clear timeout on component unmount
+    }
+  }, [toast]);
+
   return (
     <Provider>
-      <Container width="100vw" py={3}>
+      <Container width="100vw" maxW="100%" py={3}>
 
-        <VStack alignItems="stretch" gap="10px">
+        <VStack alignItems="stretch" gap="15px" width="100%">
+
+          <Toaster>
+          {toast && (
+              toaster.create ({
+                title: toast.title,
+                description: toast.description,
+                status: toast.status,
+                duration: toast.duration,
+                type: toast.type,
+                colorPalette: toaster.colorPalette,
+              })
+          )}
+          </Toaster>
 
           <HStack width="100%" justify="center" align="center">
 
-            <Heading size="4xl" margin={3}>
+            <Heading size="4xl" margin={5}>
               LetterlyYourCover
             </Heading>
 
@@ -122,7 +157,7 @@ function App() {
 
           </HStack>
 
-          <Card.Root height="125px">
+          <Card.Root height="130px">
             <Card.Header>
               <HStack width="100%" position="relative">
 
@@ -167,7 +202,7 @@ function App() {
                   placeholder="Paste your resume here..."
                   value={resumeText}
                   onChange={(e) => setResumeText(e.target.value)}
-                  height="300px"
+                  height="320px"
                 />
               </Card.Body>
 
@@ -182,7 +217,7 @@ function App() {
                   placeholder="Paste the job posting here..."
                   value={jobPosting}
                   onChange={(e) => setJobPosting(e.target.value)}
-                  height="300px"
+                  height="320px"
                 />
               </Card.Body>
             </Card.Root>
@@ -217,7 +252,7 @@ function App() {
               <Card.Body>
                 <Textarea
                   value={coverLetter}
-                  height="400px"
+                  height="500px"
                   variant="subtle"
                   fontSize="md"
                   readOnly
