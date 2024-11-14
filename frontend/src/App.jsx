@@ -89,10 +89,10 @@ function App() {
       if (!response.ok) {
         throw new Error('Failed to generate cover letter');
       }
-      
+
       const data = await response.json();
       setCoverLetter(data.cover_letter);
-      
+
       setToast({
         type: 'success',
         title: 'Success!',
@@ -146,27 +146,43 @@ function App() {
           )}
           </Toaster>
 
-          <HStack width="100%" justify="center" align="center">
-
+          <HStack
+            width="100%"
+            justify="center"
+            align="center"
+            wrap="wrap"
+            spacing={4}
+          >
             <Heading size="4xl" margin={5}>
               LetterlyYourCover
             </Heading>
 
-            <Text fontSize="xs" position="absolute" right="8" textAlign="right">
+            <Text
+              fontSize="xs"
+              position={{ base: 'static', md: 'absolute' }}
+              right={{ base: 'auto', md: '8' }}
+              textAlign={{ base: 'center', md: 'right' }}
+              mt={{ base: 2, md: 0 }}
+            >
               Total Cover Letters Generated: {generationCount}
             </Text>
-
           </HStack>
 
-          <Card.Root height="130px">
+          <Card.Root height="auto">
             <Card.Header>
-              <HStack width="100%" position="relative">
+              <HStack width="100%" position="relative" wrap="wrap">
 
-                <Box position="absolute" left="50%" transform="translateX(-50%)">
+                <Box flex="1" textAlign="center">
                   <Heading size="lg" textAlign="center"><strong>Select Template</strong></Heading>
                 </Box>
 
-                <Text fontSize="sm" position="absolute" right="0" textAlign="right">
+                <Text 
+                  fontSize="sm"
+                  position={{ base: 'static', md: 'absolute' }}
+                  right={{ base: 'auto', md: '0' }}
+                  textAlign={{ base: 'center', md: 'right' }}
+                  mt={{ base: 2, md: 0 }}        
+                >
                   {selectedTemplateDescription ? (
                   // If a template is selected, show the URL as a clickable link
                   <a 
@@ -192,10 +208,9 @@ function App() {
                   placeholder="Select a template"
                   value={selectedTemplate}
                   onChange={(e) => {
-                    
                     const selectedId = e.target.value;
                     setSelectedTemplate(selectedId); // Set the selected template id
-            
+                    
                     // Find the selected template and update the description
                     const selectedTemplateObj = templates.find((template) => template.id === parseInt(selectedId, 10)); // Compare by id
                     
@@ -227,7 +242,7 @@ function App() {
                   placeholder="Paste your resume here..."
                   value={resumeText}
                   onChange={(e) => setResumeText(e.target.value)}
-                  height="320px"
+                  height="315px"
                 />
               </Card.Body>
 
@@ -242,7 +257,7 @@ function App() {
                   placeholder="Paste the job posting here..."
                   value={jobPosting}
                   onChange={(e) => setJobPosting(e.target.value)}
-                  height="320px"
+                  height="315px"
                 />
               </Card.Body>
             </Card.Root>
