@@ -31,7 +31,7 @@ function App() {
   // Get templates from backend
   const fetchTemplates = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/templates/');
+      const response = await fetch('http://ec2-54-151-22-16.us-west-1.compute.amazonaws.com/api/templates/');
       const data = await response.json();
       setTemplates(data);
     } catch (error) {
@@ -45,7 +45,7 @@ function App() {
   // Generation Count
   const fetchGenerationCount = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/generation-count/');
+      const response = await fetch('http://ec2-54-151-22-16.us-west-1.compute.amazonaws.com/api/generation-count/');
       const data = await response.json();
       console.log(data.count);
       setGenerationCount(data.count);
@@ -67,7 +67,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/api/generate/', {
+      const response = await fetch('http://ec2-54-151-22-16.us-west-1.compute.amazonaws.com/api/generate/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
